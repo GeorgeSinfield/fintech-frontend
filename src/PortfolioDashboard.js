@@ -51,6 +51,36 @@ function PortfolioDashboard({metrics}) {
             {/* VaR */}
             <h3>Portfolio VaR (95%)</h3>
             <p>{(metrics.portfolio_var * 100).toFixed(2)}% daily loss at 95% confidence</p>
+
+            {/* Correlation Heatmap */}
+            <h3>Correlation Matrix</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Object.keys(metrics.correlation_matrix).length + 1}, 80px)`, gap: '4px' }}>
+                
+                {/* Header row — empty corner then ticker names */}
+                <div></div>
+                {Object.keys(metrics.correlation_matrix).map(ticker => (
+                    <div key={ticker} style={{ fontWeight: 'bold', textAlign: 'center', fontSize: '13px' }}>{ticker}</div>
+                ))}
+
+                {/* Data rows */}
+                {Object.entries(metrics.correlation_matrix).map(([rowTicker, values]) => (
+                    <React.Fragment key={rowTicker}>
+                        <div style={{ fontWeight: 'bold', fontSize: '13px' }}>{rowTicker}</div>
+                        {Object.values(values).map((val, i) => (
+                            <div key={i} style={{
+                                backgroundColor: `rgba(12, 68, 124, ${Math.abs(val)})`,
+                                color: Math.abs(val) > 0.5 ? 'white' : 'black',
+                                textAlign: 'center',
+                                padding: '8px',
+                                borderRadius: '4px',
+                                fontSize: '13px'
+                            }}>
+                                {val.toFixed(2)}
+                            </div>
+                        ))}
+                    </React.Fragment>
+                ))}
+            </div>
         </div>
 )
 }
