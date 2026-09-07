@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import axios from 'axios'
 import PortfolioBuilder from './PortfolioBuilder'
+import RiskBriefDisplay from './RiskBriefDisplay'
 
 //Assign api url
 const API_URL = 'http://localhost:8000'
@@ -20,7 +21,7 @@ function App() {
       tickers: tickers,
       weights: weights
     })
-    
+    console.log(response.data)  // add this line
     setResult(response.data)
     setLoading(false)
   }
@@ -37,7 +38,7 @@ function App() {
       <PortfolioBuilder onSubmit={handleSubmit} />
 
       {loading && <p>Generating risk brief — this takes about 60 seconds...</p>}
-      {result && <pre>{JSON.stringify(result, null, 2)}</pre>}
+      {<RiskBriefDisplay result={result} />}
 
     </div>
   )
