@@ -25,13 +25,12 @@ function App() {
 
   //Close tab
   const closeTab = (id) => {
-    const remaining = tabs.filter(t => t.id !== id)
-    if (remaining.length === 0) {
-      addTab()
-      return
-    }
-    setTabs(remaining)
-    if (activeTab === id) setActiveTab(remaining[remaining.length - 1].id)
+    setTabs(prev => {
+      const remaining = prev.filter(t => t.id !== id)
+      if (remaining.length === 0) return prev
+      setActiveTab(remaining[remaining.length - 1].id)
+      return remaining
+    })
   }
 
   //Update Tab
@@ -43,6 +42,10 @@ function App() {
   const handleGenerateBrief = async (holdings) => {
     const tickers = holdings.map(h => h.ticker)
     const weights = holdings.map(h => h.weight / 100)
+
+    //Save new tab ID
+    const originatingTabId = activeTab
+
 
     //create a loading tab
     const briefId = nextId
@@ -60,8 +63,11 @@ function App() {
       const response = await axios.post(`${API_URL}/risk-brief`, { tickers, weights })
       updateTab(briefId, { 
         name: 'Portfolio Brief',
-        data: { brief: response.data.brief, metrics: response.data.metrics, holdings, loading: false }
+        data: { brief: response.data.brief, metrics: response.data.metrics, holdings, loading: false },
       })
+
+      //Closes new tab (original tab)
+      closeTab(originatingTabId)
 
       //Error Handling
     } catch (err) {
@@ -71,6 +77,9 @@ function App() {
 
   //Upload 10k
   const handleUpload10K = async (file, companyName) => {
+
+    //Save new tab ID
+    const originatingTabId = activeTab
 
     //create a loading tab
     const uploadId = nextId
@@ -93,6 +102,9 @@ function App() {
         name: companyName,
         data: {companyName: companyName, collectionName: companyName.toLowerCase().replace(/ /g, '_'), riskCategories: response.data, loading: false}
       })
+
+      //Closes new tab (original tab)
+      closeTab(originatingTabId)
 
       //Error Handling
     } catch (err) {
