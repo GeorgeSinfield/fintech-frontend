@@ -1,61 +1,133 @@
 import React, { useState } from 'react'
 import axios from 'axios'
-import PortfolioBuilder from './PortfolioBuilder'
-import RiskBriefDisplay from './RiskBriefDisplay'
-import PortfolioDashboard from './PortfolioDashboard'
-import TenKUpload from './10KUpload'
+import DefaultTab from './DefaultTab'
 
-//Assign api url
+//Set API URL
 const API_URL = 'http://localhost:8000'
 
-//App function
+//App Function
 function App() {
+  const [tabs, setTabs] = useState([
+    { id: 1, type: 'default', name: 'New Tab', data: {} }
+  ])
+  const [activeTab, setActiveTab] = useState(1)
+  const [nextId, setNextId] = useState(2)
 
-  const [result, setResult] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
-
-  const handleSubmit = async (holdings) => {
-    setLoading(true)
-    setError(null)
-    try {
-      const tickers = holdings.map((h) => h.ticker)
-      const weights = holdings.map((h) => Number(h.weight) / 100)
-      const response = await axios.post(`${API_URL}/risk-brief`, {
-        tickers: tickers,
-        weights: weights
-      })
-      setResult(response.data)
-    } catch (err) {
-      setError("Something went wrong generating the brief. Please try again.")
-    }
-    setLoading(false)
+  //Add tab
+  const addTab = () => {
+    const newTab = { id: nextId, type: 'default', name: 'New Tab', data: {} }
+    setTabs([...tabs, newTab])
+    setActiveTab(nextId)
+    setNextId(nextId + 1)
   }
 
+  //Close tab
+  const closeTab = (id) => {
+    const remaining = tabs.filter(t => t.id !== id)
+    if (remaining.length === 0) {
+      addTab()
+      return
+    }
+    setTabs(remaining)
+    if (activeTab === id) setActiveTab(remaining[remaining.length - 1].id)
+  }
+
+  //Update Tab
+  const updateTab = (id, updates) => {
+    setTabs(prev => prev.map(t => t.id === id ? { ...t, ...updates } : t))
+  }
+
+  const handleGenerateBrief = async (holdings) => {
+    const tickers = holdings.map(h => h.ticker)
+    const weights = holdings.map(h => h.weight / 100)
+
+    //create a loading tab
+    const briefId = nextId
+    setNextId(nextId + 1)
+    setTabs(prev => [...prev, {
+      id: briefId,
+      type: 'brief', 
+      name: 'Generating...', 
+      data: { loading: true } 
+    }])
+    setActiveTab(briefId)
+
+    try {
+      console.log('sending:', { tickers, weights })
+
+      const response = await axios.post(`${API_URL}/risk-brief`, { tickers, weights })
+      updateTab(briefId, { 
+        name: 'Portfolio Brief',
+        data: { brief: response.data.brief, metrics: response.data.metrics, holdings, loading: false }
+      })
+    } catch (err) {
+      updateTab(briefId, { name: 'Error', data: { error: true, loading: false } })
+    }
+  }
+
+  const currentTab = tabs.find(t => t.id === activeTab)
+
+  //Layout
   return (
-
-    //Size
-    <div style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem' }}>
-
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      
       {/* Header */}
-      <h1>Fintech Risk Intelligence Platform</h1>
+      <div style={{ background: '#0C447C', color: 'white', padding: '0.75rem 1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Fintech Risk Intelligence Platform</span>
+        <span style={{ fontSize: '0.85rem', opacity: 0.85 }}>
+          <a href="https://linkedin.com/in/george-sinfield" target="_blank" rel="noreferrer" style={{ color: 'white', marginRight: '1rem' }}>LinkedIn</a>
+          <a href="https://github.com/GeorgeSinfield" target="_blank" rel="noreferrer" style={{ color: 'white', marginRight: '1rem' }}>GitHub</a>
+          George Sinfield
+        </span>
+      </div>
 
-      {/* PortfolioBuilder */}
-      <PortfolioBuilder onSubmit={handleSubmit} />
+      {/* Tab bar */}
+      <div style={{ background: '#f1efe8', borderBottom: '1px solid #ccc', display: 'flex', alignItems: 'center', padding: '0 0.5rem' }}>
+        {tabs.map(tab => (
+          <div
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            style={{
+              padding: '0.5rem 1rem',
+              marginRight: '2px',
+              marginTop: '4px',
+              background: activeTab === tab.id ? 'white' : '#ddd',
+              borderRadius: '6px 6px 0 0',
+              cursor: 'pointer',
+              fontSize: '13px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              borderTop: activeTab === tab.id ? '2px solid #0C447C' : '2px solid transparent'
+            }}
+          >
+            {tab.name}
+            <span
+              onClick={(e) => { e.stopPropagation(); closeTab(tab.id) }}
+              style={{ opacity: 0.5, fontSize: '11px' }}
+            >✕</span>
+          </div>
+        ))}
+        <button
+          onClick={addTab}
+          style={{ marginLeft: '4px', background: 'none', border: 'none', fontSize: '18px', cursor: 'pointer', padding: '0 8px', color: '#555' }}
+        >+</button>
+      </div>
 
-      {/* 10KUpload */}
-      <TenKUpload/>
-
-      {/* Error handling  */}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-
-      {loading && <p>Generating risk brief — this takes about 60 seconds...</p>}
-
-      {result && <PortfolioDashboard metrics={result.metrics} />}
-
-      {result && <RiskBriefDisplay result={result.brief} />}
+      {/* Tab content */}
+      <div style={{ flex: 1, padding: '1.5rem' }}>
+        {currentTab && currentTab.type === 'default' && (
+          <DefaultTab
+            tab={currentTab}
+            onUpdate={(updates) => updateTab(activeTab, { data: { ...currentTab.data, ...updates } })}
+            onGenerateBrief={handleGenerateBrief}
+            onUpload10K={() => {}}
+          />
+        )}
+      </div>
 
     </div>
   )
 }
+
 export default App

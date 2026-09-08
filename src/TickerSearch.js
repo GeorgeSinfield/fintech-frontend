@@ -37,6 +37,7 @@ function TickerSearch({ onSelect }) {
         value={query}
         onChange={handleSearch}
         placeholder="Search for a company..."
+        style={{ width: '100%', padding: '8px', fontSize: '14px', boxSizing: 'border-box' }}
       />
       {results.map((result) => (
         <div

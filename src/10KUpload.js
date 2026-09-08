@@ -4,6 +4,7 @@ import ReactMarkdown from 'react-markdown'
 
 const API_URL = 'http://localhost:8000'
 
+//Function that takes the 10k file and returns its risk categories
 function TenKUpload() {
   const [file, setFile] = useState(null)
   const [companyName, setCompanyName] = useState('')
