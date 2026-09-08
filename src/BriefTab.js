@@ -9,7 +9,7 @@ function BriefTab({ tab }) {
 
   return (
     // Outer container
-    <div style={{ display: 'flex', height: 'calc(100vh - 90px)', gap: '1rem' }}>
+    <div style={{ display: 'flex', height: 'calc(100vh - 120px)', gap: '1rem' }}>
       
       {/* Left Panel */}
       <div style={{ width: '40%', overflowY: 'auto', paddingRight: '1rem' }}>

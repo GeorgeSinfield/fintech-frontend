@@ -27,7 +27,7 @@ function DefaultTab({ tab, onUpdate, onGenerateBrief, onUpload10K }) {
   return (
   <div style={{ maxWidth: '700px', margin: '2rem auto', padding: '0 1rem' }}>
     
-    {/* Section 1 — add a holding */}
+    {/* Section 1 - add a holding */}
     <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '8px' }}>
         <div style={{ flex: 3 }}>
             <TickerSearch onSelect={(ticker) => setSelectedTicker(ticker)} />
@@ -45,7 +45,7 @@ function DefaultTab({ tab, onUpdate, onGenerateBrief, onUpload10K }) {
         >Add</button>
         </div>
     
-    {/* Section 2 — optional 10-K upload */}
+    {/* Section 2 - optional 10-K upload */}
     <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '24px', padding: '8px', background: '#f5f5f5', borderRadius: '0 0 6px 6px' }}>
     <input
         type="file"
@@ -66,7 +66,7 @@ function DefaultTab({ tab, onUpdate, onGenerateBrief, onUpload10K }) {
     >Upload 10-K</button>
     </div>
 
-    {/* Section 3 — holdings list */}
+    {/* Section 3 - holdings list */}
     {holdings.length > 0 && (
     <div style={{ marginBottom: '16px' }}>
         {holdings.map((h, i) => (
@@ -85,7 +85,7 @@ function DefaultTab({ tab, onUpdate, onGenerateBrief, onUpload10K }) {
     </div>
     )}
 
-    {/* Section 4 — generate button */}
+    {/* Section 4 - generate button */}
     <button
     disabled={totalWeight !== 100 || holdings.length === 0}
     onClick={() => onGenerateBrief(holdings)}
@@ -103,6 +103,13 @@ function DefaultTab({ tab, onUpdate, onGenerateBrief, onUpload10K }) {
     >
     Generate Risk Brief
     </button>
+
+    {/* Usage guide */}
+    <div style={{ marginTop: '2rem', padding: '1rem', background: '#f5f5f5', borderRadius: '6px', fontSize: '13px', color: '#555', lineHeight: '1.8' }}>
+    <p style={{ fontWeight: '500', color: '#333', marginBottom: '0.5rem' }}>How to use this tool</p>
+    <p><strong>Portfolio analysis:</strong> Search for companies using the search box above, enter the percentage weight of each holding, and click Generate Risk Brief when your weights total 100%.</p>
+    <p style={{ marginTop: '0.5rem' }}><strong>10-K filing analysis:</strong> Upload a company's annual report PDF to get a structured risk factor breakdown and ask questions about the filing. To find a 10-K, go to <a href="https://efts.sec.gov/LATEST/search-index?forms=10-K" target="_blank" rel="noreferrer" style={{ color: '#0C447C' }}>SEC EDGAR</a>, search for any public company, and download their most recent 10-K filing.</p>
+    </div>
 
   </div>
 )

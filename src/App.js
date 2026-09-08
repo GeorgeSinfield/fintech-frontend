@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import axios from 'axios'
 import DefaultTab from './DefaultTab'
 import BriefTab from './BriefTab'
+import CompanyTab from './CompanyTab'
 
 //Set API URL
 const API_URL = 'http://localhost:8000'
@@ -56,7 +57,6 @@ function App() {
 
     //API call
     try {
-      console.log('sending:', { tickers, weights })
       const response = await axios.post(`${API_URL}/risk-brief`, { tickers, weights })
       updateTab(briefId, { 
         name: 'Portfolio Brief',
@@ -66,6 +66,37 @@ function App() {
       //Error Handling
     } catch (err) {
       updateTab(briefId, { name: 'Error', data: { error: true, loading: false } })
+    }
+  }
+
+  //Upload 10k
+  const handleUpload10K = async (file, companyName) => {
+
+    //create a loading tab
+    const uploadId = nextId
+    setNextId(nextId + 1)
+    setTabs(prev => [...prev, {
+      id: uploadId,
+      type: 'company', 
+      name: 'Processing...', 
+      data: { loading: true } 
+    }])
+    setActiveTab(uploadId)
+
+    //API call
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('company_name', companyName)
+      const response = await axios.post(`${API_URL}/upload-10k`, formData)
+      updateTab(uploadId, { 
+        name: companyName,
+        data: {companyName: companyName, collectionName: companyName.toLowerCase().replace(/ /g, '_'), riskCategories: response.data, loading: false}
+      })
+
+      //Error Handling
+    } catch (err) {
+      updateTab(uploadId, { name: 'Error', data: { error: true, loading: false } })
     }
   }
 
@@ -79,7 +110,7 @@ function App() {
       <div style={{ background: '#0C447C', color: 'white', padding: '0.75rem 1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <span style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Fintech Risk Intelligence Platform</span>
         <span style={{ fontSize: '0.85rem', opacity: 0.85 }}>
-          <a href="https://linkedin.com/in/george-sinfield" target="_blank" rel="noreferrer" style={{ color: 'white', marginRight: '1rem' }}>LinkedIn</a>
+          <a href="https://www.linkedin.com/in/george-sinfield-904b29388/" target="_blank" rel="noreferrer" style={{ color: 'white', marginRight: '1rem' }}>LinkedIn</a>
           <a href="https://github.com/GeorgeSinfield" target="_blank" rel="noreferrer" style={{ color: 'white', marginRight: '1rem' }}>GitHub</a>
           George Sinfield
         </span>
@@ -120,19 +151,27 @@ function App() {
 
       {/* Tab content */}
       <div style={{ flex: 1, padding: '1.5rem' }}>
+        
         {currentTab && currentTab.type === 'default' && (
           <DefaultTab
             tab={currentTab}
             onUpdate={(updates) => updateTab(activeTab, { data: { ...currentTab.data, ...updates } })}
             onGenerateBrief={handleGenerateBrief}
-            onUpload10K={() => {}}
+            onUpload10K={handleUpload10K}
           />
         )}
 
         {currentTab && currentTab.type === 'brief' && (
           <BriefTab tab={currentTab} />
         )}
-        
+
+        {currentTab && currentTab.type === 'company' && (
+        <CompanyTab 
+          tab={currentTab}
+          onUpdate={(updates) => updateTab(activeTab, { data: { ...currentTab.data, ...updates } })}
+        />
+      )}
+
       </div>
 
     </div>
