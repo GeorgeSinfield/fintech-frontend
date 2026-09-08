@@ -5,7 +5,7 @@ import BriefTab from './BriefTab'
 import CompanyTab from './CompanyTab'
 
 //Set API URL
-const API_URL = 'http://localhost:8000'
+const API_URL = 'https://fintech-risk-api.greenmeadow-4a2c3e23.uksouth.azurecontainerapps.io'
 
 //App Function
 function App() {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import axios from 'axios'
 
-const API_URL = 'http://localhost:8000'
+const API_URL = 'https://fintech-risk-api.greenmeadow-4a2c3e23.uksouth.azurecontainerapps.io'
 
 //Function that
 function TickerSearch({ onSelect }) {

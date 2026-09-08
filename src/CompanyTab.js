@@ -3,7 +3,7 @@ import axios from 'axios'
 import ReactMarkdown from 'react-markdown'
 
 //Set API URL
-const API_URL = 'http://localhost:8000'
+const API_URL = 'https://fintech-risk-api.greenmeadow-4a2c3e23.uksouth.azurecontainerapps.io'
 
 //CompanyTab
 function CompanyTab({ tab, onUpdate }) {

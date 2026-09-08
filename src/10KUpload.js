@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import axios from 'axios'
 import ReactMarkdown from 'react-markdown'
 
-const API_URL = 'http://localhost:8000'
+const API_URL = 'https://fintech-risk-api.greenmeadow-4a2c3e23.uksouth.azurecontainerapps.io'
 
 //Function that takes the 10k file and returns its risk categories
 function TenKUpload() {
