@@ -108,7 +108,7 @@ function DefaultTab({ tab, onUpdate, onGenerateBrief, onUpload10K }) {
     <div style={{ marginTop: '2rem', padding: '1rem', background: '#f5f5f5', borderRadius: '6px', fontSize: '13px', color: '#555', lineHeight: '1.8' }}>
     <p style={{ fontWeight: '500', color: '#333', marginBottom: '0.5rem' }}>How to use this tool</p>
     <p><strong>Portfolio analysis:</strong> Search for companies using the search box above, enter the percentage weight of each holding, and click Generate Risk Brief when your weights total 100%.</p>
-    <p style={{ marginTop: '0.5rem' }}><strong>10-K filing analysis:</strong> Upload a company's annual report PDF to get a structured risk factor breakdown and ask questions about the filing. To find a 10-K, go to <a href="https://www.sec.gov/cgi-bin/browse-edgar" target="_blank" rel="noreferrer" style={{ color: '#0C447C' }}>SEC EDGAR</a>, search for any public company, and download their most recent 10-K filing.</p>
+    <p style={{ marginTop: '0.5rem' }}><strong>10-K filing analysis:</strong> Upload a company's annual report PDF to get a structured risk factor breakdown and ask questions about the filing. To find a 10-K, go to <a href="https://www.sec.gov/search-filings" target="_blank" rel="noreferrer" style={{ color: '#0C447C' }}>SEC EDGAR</a>, search for any public company, and download their most recent 10-K filing.</p>
     </div>
 
   </div>
