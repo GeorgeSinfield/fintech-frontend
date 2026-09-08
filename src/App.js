@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import axios from 'axios'
 import DefaultTab from './DefaultTab'
+import BriefTab from './BriefTab'
 
 //Set API URL
 const API_URL = 'http://localhost:8000'
@@ -37,6 +38,7 @@ function App() {
     setTabs(prev => prev.map(t => t.id === id ? { ...t, ...updates } : t))
   }
 
+  //Generate Brief
   const handleGenerateBrief = async (holdings) => {
     const tickers = holdings.map(h => h.ticker)
     const weights = holdings.map(h => h.weight / 100)
@@ -52,14 +54,16 @@ function App() {
     }])
     setActiveTab(briefId)
 
+    //API call
     try {
       console.log('sending:', { tickers, weights })
-
       const response = await axios.post(`${API_URL}/risk-brief`, { tickers, weights })
       updateTab(briefId, { 
         name: 'Portfolio Brief',
         data: { brief: response.data.brief, metrics: response.data.metrics, holdings, loading: false }
       })
+
+      //Error Handling
     } catch (err) {
       updateTab(briefId, { name: 'Error', data: { error: true, loading: false } })
     }
@@ -124,6 +128,11 @@ function App() {
             onUpload10K={() => {}}
           />
         )}
+
+        {currentTab && currentTab.type === 'brief' && (
+          <BriefTab tab={currentTab} />
+        )}
+        
       </div>
 
     </div>
