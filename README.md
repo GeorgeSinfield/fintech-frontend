@@ -2,6 +2,7 @@
 A React frontend for the Fintech Risk Intelligence Platform. A browser-style tab interface where users can analyse portfolios, upload company filings, and chat with a document AI, all in independently scrollable, persistent tabs.
 
 ### 🔗 Live demo: https://fintech-risk-intelligence-platform-george.vercel.app
+⚠️ Warning the site is slow on first opening due to the container. You will need to wait 30-60 seconds for it to warm up after the first API call.
 
 ### 📦 Backend repo: https://github.com/GeorgeSinfield/Fintech-Risk-Platform/tree/master
 
