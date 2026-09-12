@@ -22,7 +22,9 @@ A React frontend for the Fintech Risk Intelligence Platform. A browser-style tab
 
 ## 🔄The process
 - I originally built the frontend as a single page with all the components stacked vertically, PortfolioBuilder, TenKUpload, PortfolioDashboard, RiskBriefDisplay all in one App.js. That worked but it wasn't the product I actually wanted to build. I sketched out a proper design on paper and realised what I actually wanted was a tab-based interface like a browser, where each analysis lives in its own independent tab.
+  
 - Rebuilding around the tab architecture was the biggest design decision of the frontend. Each tab is an object in an array with its own type and data. The default input tab, the portfolio brief tab, and the company/10-K tab. The key insight was that tab state has to live in the parent App.js array rather than inside each component, otherwise switching tabs resets everything. That's also where I hit the stale closure bug. updateTab was using an old snapshot of the tabs array, which meant tabs were disappearing when updated after an async API call. Fixing it with the prev => pattern was one of the moments where React suddenly made sense.
+  
 - The brief tab layout came directly from the sketch. The left panel fixed with the holdings list and charts, right panel independently scrollable with the text brief. The company tab was the most satisfying to build because it combines the most pieces: the 10-K risk factors from Phase 1 on the right, and a proper chat interface on the left that calls the /ask endpoint and remembers the conversation history when you switch tabs and come back.
 
 ## 📚What I Learned 
